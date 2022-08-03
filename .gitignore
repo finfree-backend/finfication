@@ -21,6 +21,6 @@
 *.iml
 *.ipr
 
-finfree-pubsub-admin.json
+*.json
 *.env
 *.pem
