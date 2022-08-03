@@ -1,4 +1,4 @@
-package main
+package finfication
 
 type PubSubMessage struct {
 	NotificationType string               `json:"nt"`

@@ -1,4 +1,4 @@
-package main
+package finfication
 
 import (
 	"crypto/md5"

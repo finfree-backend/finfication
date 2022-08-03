@@ -1,4 +1,4 @@
-package main
+package finfication
 
 import (
 	"cloud.google.com/go/pubsub"
