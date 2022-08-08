@@ -17,7 +17,7 @@ func TestFinfication(t *testing.T) {
 	}
 	defer client.Close()
 
-	exampleNotificationSender, err := client.NewFinficationSender(&FinficationOption{
+	exampleNotificationSender, err := client.NewFinficationPublisher(&FinficationOption{
 		NotificationType:      "EXAMPLE_NOTIFICATION-v2",
 		TopicName:             "finfication",
 		HashFunc:              nil,
@@ -66,13 +66,16 @@ func TestSubscribe(t *testing.T) {
 	defer client.Close()
 
 	client.pubsubClient.Subscription("finfication-sub").Receive(context.Background(), func(ctx context.Context, message *pubsub.Message) {
-		var msg PubSubMessage
-		if err := json.Unmarshal(message.Data, &msg); err != nil {
-			log.Println("Error on unmarshalling data. Err:", err)
-			return
-		}
+		message.Ack()
+		go func(messagex *pubsub.Message) {
+			var msg PubSubMessage
+			if err := json.Unmarshal(messagex.Data, &msg); err != nil {
+				log.Println("Error on unmarshalling data. Err:", err)
+				return
+			}
 
-		log.Println("Msg received:", msg)
+			log.Println("Msg received:", msg)
+		}(message)
 	})
 
 }

@@ -33,7 +33,7 @@ func New(credentialFilePath string) (*Client, error) {
 	return &finfication, nil
 }
 
-func (f *Client) NewFinficationSender(opt *FinficationOption) (*FinficationSender, error) {
+func (f *Client) NewFinficationPublisher(opt *FinficationOption) (*NewFinficationPublisher, error) {
 	if opt.NotificationType == "" {
 		return nil, &FinficationError{Message: "'NotificationType' parameter can not be blank"}
 	}
@@ -42,7 +42,7 @@ func (f *Client) NewFinficationSender(opt *FinficationOption) (*FinficationSende
 		return nil, &FinficationError{Message: "'TopicName' parameter can not be blank"}
 	}
 
-	fs := FinficationSender{
+	fs := NewFinficationPublisher{
 		notificationType:      opt.NotificationType,
 		topic:                 f.pubsubClient.Topic(opt.TopicName),
 		hashFn:                opt.HashFunc,
@@ -65,11 +65,15 @@ func (f *Client) NewFinficationSender(opt *FinficationOption) (*FinficationSende
 	return &fs, nil
 }
 
+func (f *Client) NewFinficationConsumer(subscriptionName string, fn func(ctx context.Context, message *pubsub.Message)) error {
+	return f.pubsubClient.Subscription(subscriptionName).Receive(context.Background(), fn)
+}
+
 func (f *Client) Close() {
 	f.pubsubClient.Close()
 }
 
-type FinficationSender struct {
+type NewFinficationPublisher struct {
 	topic                 *pubsub.Topic
 	notificationType      string
 	hashFn                HashFn
@@ -77,7 +81,7 @@ type FinficationSender struct {
 	OrderingFn            OrderingFn
 }
 
-func (fs *FinficationSender) Publish(data []*PubSubMessageData) error {
+func (fs *NewFinficationPublisher) Publish(data []*PubSubMessageData) error {
 	pubSubMessage := PubSubMessage{
 		NotificationType: fs.notificationType,
 		Data:             data,
