@@ -19,7 +19,7 @@ func TestFinfication(t *testing.T) {
 
 	exampleNotificationSender, err := client.NewFinficationPublisher(&FinficationOption{
 		NotificationType:      "EXAMPLE_NOTIFICATION-v2",
-		TopicName:             "finfication",
+		TopicName:             os.Getenv("FINFICATION_TOPIC"),
 		HashFunc:              nil,
 		EnableMessageOrdering: false,
 		OrderingFn:            nil,
