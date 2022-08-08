@@ -1,9 +1,6 @@
 package finfication
 
 import (
-	"cloud.google.com/go/pubsub"
-	"context"
-	"encoding/json"
 	"log"
 	"os"
 	"testing"
@@ -65,17 +62,10 @@ func TestSubscribe(t *testing.T) {
 	}
 	defer client.Close()
 
-	client.pubsubClient.Subscription("finfication-sub").Receive(context.Background(), func(ctx context.Context, message *pubsub.Message) {
-		message.Ack()
-		go func(messagex *pubsub.Message) {
-			var msg PubSubMessage
-			if err := json.Unmarshal(messagex.Data, &msg); err != nil {
-				log.Println("Error on unmarshalling data. Err:", err)
-				return
-			}
-
-			log.Println("Msg received:", msg)
-		}(message)
-	})
+	if err := client.NewFinficationConsumer(os.Getenv("FINFICATION_SUBSCRIPTION_NAME"), func(message *PubSubMessage) {
+		log.Println("Message received:", message)
+	}); err != nil {
+		log.Println("Err:", err)
+	}
 
 }

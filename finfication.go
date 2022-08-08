@@ -7,7 +7,10 @@ import (
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/option"
 	"io/ioutil"
+	"log"
 )
+
+type ConsumerFn func(message *PubSubMessage)
 
 type Client struct {
 	pubsubClient *pubsub.Client
@@ -65,8 +68,16 @@ func (f *Client) NewFinficationPublisher(opt *FinficationOption) (*NewFinficatio
 	return &fs, nil
 }
 
-func (f *Client) NewFinficationConsumer(subscriptionName string, fn func(ctx context.Context, message *pubsub.Message)) error {
-	return f.pubsubClient.Subscription(subscriptionName).Receive(context.Background(), fn)
+func (f *Client) NewFinficationConsumer(subscriptionName string, fn ConsumerFn) error {
+	return f.pubsubClient.Subscription(subscriptionName).Receive(context.Background(), func(ctx context.Context, message *pubsub.Message) {
+		defer message.Ack()
+		var msg PubSubMessage
+		if err := json.Unmarshal(message.Data, &msg); err != nil {
+			log.Println("Error on unmarshalling Pub/Sub message. Err:", err, ". Data:", string(message.Data))
+			return
+		}
+		fn(&msg)
+	})
 }
 
 func (f *Client) Close() {
