@@ -30,11 +30,9 @@ func TestFinfication(t *testing.T) {
 		t.FailNow()
 	}
 
-	data := []*PubSubMessageData{
-		{
-			Usernames:  []string{"test44"},
-			Parameters: map[string]string{"stock": "PARSN", "percentage": "1.87", "price": "42.46"},
-		},
+	data := &PubSubMessageData{
+		Usernames:  []string{"test44"},
+		Parameters: map[string]string{"stock": "PARSN", "percentage": "1.87", "price": "42.46"},
 	}
 	err = exampleNotificationSender.Publish(data)
 	if err != nil {

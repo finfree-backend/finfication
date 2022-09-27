@@ -1,9 +1,9 @@
 package finfication
 
 type PubSubMessage struct {
-	NotificationType string               `json:"nt"`
-	Hash             string               `json:"h"`
-	Data             []*PubSubMessageData `json:"d"`
+	NotificationType string             `json:"nt"`
+	Hash             string             `json:"h"`
+	Data             *PubSubMessageData `json:"d"`
 }
 
 type PubSubMessageData struct {

@@ -92,7 +92,7 @@ type NewFinficationPublisher struct {
 	OrderingFn            OrderingFn
 }
 
-func (fs *NewFinficationPublisher) Publish(data []*PubSubMessageData) error {
+func (fs *NewFinficationPublisher) Publish(data *PubSubMessageData) error {
 	pubSubMessage := PubSubMessage{
 		NotificationType: fs.notificationType,
 		Data:             data,
