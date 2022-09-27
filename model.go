@@ -7,7 +7,7 @@ type PubSubMessage struct {
 }
 
 type PubSubMessageData struct {
-	Username           string            `json:"u"`
+	Usernames          []string          `json:"u"`
 	Parameters         map[string]string `json:"p"`
 	OptionalParameters map[string]string `json:"op"`
 }

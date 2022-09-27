@@ -15,9 +15,12 @@ func TestFinfication(t *testing.T) {
 	defer client.Close()
 
 	exampleNotificationSender, err := client.NewFinficationPublisher(&FinficationOption{
-		NotificationType:      "EXAMPLE_NOTIFICATION-v2",
-		TopicName:             os.Getenv("FINFICATION_TOPIC"),
-		HashFunc:              nil,
+		NotificationType: "INC_PRICE_ALERT_NOTIFICATION",
+		TopicName:        os.Getenv("FINFICATION_TOPIC"),
+		//HashFunc: func(message *PubSubMessage) string {
+		//	return HashString("PARSN:1.87:42.46")
+		//},
+		HashFunc:              DefaultHashFn,
 		EnableMessageOrdering: false,
 		OrderingFn:            nil,
 	})
@@ -29,19 +32,8 @@ func TestFinfication(t *testing.T) {
 
 	data := []*PubSubMessageData{
 		{
-			Username:           "ErtugrulAcar",
-			Parameters:         map[string]string{"name": "Ertugrul", "last_name": "Acar"},
-			OptionalParameters: map[string]string{"example_key": "example_value"},
-		},
-		{
-			Username:           "cemunuvar",
-			Parameters:         map[string]string{"name": "Cem", "last_name": "Unuvar"},
-			OptionalParameters: map[string]string{"example_key": "example_value"},
-		},
-		{
-			Username:           "ahmetakil",
-			Parameters:         map[string]string{"name": "Ahmet", "last_name": "Akıl"},
-			OptionalParameters: map[string]string{"example_key": "example_value"},
+			Usernames:  []string{"test44"},
+			Parameters: map[string]string{"stock": "PARSN", "percentage": "1.87", "price": "42.46"},
 		},
 	}
 	err = exampleNotificationSender.Publish(data)
