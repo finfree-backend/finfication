@@ -22,7 +22,11 @@ func New(credentialFilePath string) (*Client, error) {
 		return nil, err
 	}
 
-	credentials, err := google.CredentialsFromJSON(context.Background(), file, pubsub.ScopePubSub)
+	return NewWithBytes(file)
+}
+
+func NewWithBytes(bytes []byte) (*Client, error) {
+	credentials, err := google.CredentialsFromJSON(context.Background(), bytes, pubsub.ScopePubSub)
 	if err != nil {
 		return nil, err
 	}
